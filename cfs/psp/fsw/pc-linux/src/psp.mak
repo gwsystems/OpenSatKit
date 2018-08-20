@@ -22,6 +22,7 @@ cfe_psp_support.o \
 cfe_psp_ssr.o \
 cfe_psp_voltab.o \
 cfe_psp_memtab.o \
+cfe_psp_sensor.o \
 cfe_psp_timer.o \
 cfe_psp_watchdog.o \
 cfe_psp_memory.o \
@@ -40,6 +41,7 @@ cfe_psp_ssr.c  \
 cfe_psp_voltab.c \
 cfe_psp_memtab.c \
 cfe_psp_timer.c \
+cfe_psp_sensor.c \
 cfe_psp_watchdog.c \
 cfe_psp_memory.c \
 cfe_psp_exception.c \

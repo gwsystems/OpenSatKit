@@ -2,12 +2,12 @@
 ** File:  cfe_psp_start.c
 **
 **
-**      Copyright (c) 2004-2011, United States Government as represented by 
-**      Administrator for The National Aeronautics and Space Administration. 
+**      Copyright (c) 2004-2011, United States Government as represented by
+**      Administrator for The National Aeronautics and Space Administration.
 **      All Rights Reserved.
 **
 **      This is governed by the NASA Open Source Agreement and may be used,
-**      distributed and modified only pursuant to the terms of that agreement. 
+**      distributed and modified only pursuant to the terms of that agreement.
 **
 **
 
@@ -15,7 +15,7 @@
 **   cFE BSP main entry point.
 **
 ** History:
-**   2005/07/26  A. Cudmore      | Initial version for OS X/Linux 
+**   2005/07/26  A. Cudmore      | Initial version for OS X/Linux
 **
 ******************************************************************************/
 
@@ -37,7 +37,7 @@
 #include <sched.h>
 
 /*
-** cFE includes 
+** cFE includes
 */
 #include "common_types.h"
 #include "osapi.h"
@@ -105,22 +105,22 @@ void CFE_PSP_ModuleInit(void)
 ** Structure for the Command line parameters
 */
 typedef struct
-{   
+{
    char     ResetType[CFE_PSP_RESET_NAME_LENGTH];   /* Reset type can be "PO" for Power on or "PR" for Processor Reset */
    uint32   GotResetType;    /* did we get the ResetType parameter ? */
 
    uint32   SubType;         /* Reset Sub Type ( 1 - 5 )  */
    uint32   GotSubType;      /* did we get the ResetSubType parameter ? */
-   
+
    char     CpuName[CFE_PSP_CPU_NAME_LENGTH];     /* CPU Name */
    uint32   GotCpuName;      /* Did we get a CPU Name ? */
 
    uint32   CpuId;            /* CPU ID */
    uint32   GotCpuId;         /* Did we get a CPU Id ?*/
 
-   uint32   SpacecraftId;     /* Spacecraft ID */ 
+   uint32   SpacecraftId;     /* Spacecraft ID */
    uint32   GotSpacecraftId;  /* Did we get a Spacecraft ID */
-   
+
 } CFE_PSP_CommandData_t;
 
 /*
@@ -163,7 +163,7 @@ static const struct option longOpts[] = {
    { NULL,        no_argument,       NULL,  0 }
 };
 
-                                                                                                                                                            
+
 /******************************************************************************
 **  Function:  main()
 **
@@ -186,18 +186,18 @@ int main(int argc, char *argv[])
    int                longIndex = 0;
 
    /*
-   ** Initialize the CommandData struct 
+   ** Initialize the CommandData struct
    */
    memset(&(CommandData), 0, sizeof(CFE_PSP_CommandData_t));
-      
-   /* 
-   ** Process the arguments with getopt_long(), then 
+
+   /*
+   ** Process the arguments with getopt_long(), then
    ** start the cFE
    */
    opt = getopt_long( argc, argv, optString, longOpts, &longIndex );
-   while( opt != -1 ) 
+   while( opt != -1 )
    {
-      switch( opt ) 
+      switch( opt )
       {
          case 'R':
             strncpy(CommandData.ResetType, optarg, CFE_PSP_RESET_NAME_LENGTH);
@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
             printf("CFE_PSP: Reset Type: %s\n",(char *)optarg);
             CommandData.GotResetType = 1;
             break;
-				
+
          case 'S':
             CommandData.SubType = strtol(optarg, NULL, 0 );
             if ( CommandData.SubType < 1 || CommandData.SubType > 5 )
@@ -248,17 +248,17 @@ int main(int argc, char *argv[])
          case 'h':
             CFE_PSP_DisplayUsage(argv[0]);
             break;
-	
+
          default:
             CFE_PSP_DisplayUsage(argv[0]);
             break;
        }
-		
+
        opt = getopt_long( argc, argv, optString, longOpts, &longIndex );
    } /* end while */
-   
+
    /*
-   ** Set the defaults for values that were not given for the 
+   ** Set the defaults for values that were not given for the
    ** optional arguments, and check for arguments that are required.
    */
    CFE_PSP_ProcessArgumentDefaults(&CommandData);
@@ -323,17 +323,19 @@ int main(int argc, char *argv[])
    */
    OS_API_Init();
 
+   CFE_PSP_SensorInit();
+
    /*
    ** Initialize the statically linked modules (if any)
    ** This is only applicable to CMake build - classic build
    ** does not have the logic to selectively include/exclude modules
    */
    CFE_PSP_ModuleInit();
-     
+
    sleep(1);
 
    /*
-   ** Initialize the reserved memory 
+   ** Initialize the reserved memory
    */
    CFE_PSP_InitProcessorReservedMemory(reset_type);
 
@@ -469,7 +471,7 @@ void CFE_PSP_DisplayUsage(char *Name )
 **
 **  Purpose:
 **    This function assigns defaults to parameters and checks to make sure
-**    the user entered required parameters 
+**    the user entered required parameters
 **
 **  Arguments:
 **    CFE_PSP_CommandData_t *CommandData -- A pointer to the command parameters.
@@ -485,28 +487,28 @@ void CFE_PSP_ProcessArgumentDefaults(CFE_PSP_CommandData_t *CommandData)
       printf("CFE_PSP: Default Reset Type = PO\n");
       CommandData->GotResetType = 1;
    }
-   
+
    if ( CommandData->GotSubType == 0 )
    {
       CommandData->SubType = 1;
       printf("CFE_PSP: Default Reset SubType = 1\n");
       CommandData->GotSubType = 1;
    }
-   
+
    if ( CommandData->GotCpuId == 0 )
    {
       CommandData->CpuId = CFE_CPU_ID;
       printf("CFE_PSP: Default CPU ID = %d\n",CFE_CPU_ID);
       CommandData->GotCpuId = 1;
    }
-   
+
    if ( CommandData->GotSpacecraftId == 0 )
    {
       CommandData->SpacecraftId = CFE_SPACECRAFT_ID;
       printf("CFE_PSP: Default Spacecraft ID = %d\n",CFE_SPACECRAFT_ID);
       CommandData->GotSpacecraftId = 1;
    }
-   
+
    if ( CommandData->GotCpuName == 0 )
    {
       strncpy(CommandData->CpuName, CFE_CPU_NAME, CFE_PSP_CPU_NAME_LENGTH );
