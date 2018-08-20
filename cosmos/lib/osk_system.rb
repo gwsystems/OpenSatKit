@@ -80,7 +80,7 @@ module Osk
       def connect_to_local_cfs()
 
          if (interface_state(COSMOS_CFS_INT) != 'CONNECTED')
-            connect_interface(COSMOS_CFS_INT,"localhost",CFS_CMD_PORT,CFS_TLM_PORT,nil,nil,128,nil,nil)
+            connect_interface(COSMOS_CFS_INT,"192.168.0.2",CFS_CMD_PORT,CFS_TLM_PORT,nil,nil,128,nil,nil)
          end
    
       end # End connect_to_pisat()

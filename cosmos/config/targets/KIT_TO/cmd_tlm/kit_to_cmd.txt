@@ -42,7 +42,7 @@ COMMAND KIT_TO REMOVE_ALL_PKTS <%= Osk::Cfg.processor_endian %> "Remove all pack
 
 COMMAND KIT_TO ENABLE_TELEMETRY <%= Osk::Cfg.processor_endian %> "Tell TO to start sending telemetry"
   <%= Osk::Cfg.cmd_hdr(@APP_PREFIX_STR, @CMD_MID_STR, 7, 16) %>
-  APPEND_PARAMETER IP_ADDR 128 STRING "127.0.0.1" "IP Address"
+  APPEND_PARAMETER IP_ADDR 128 STRING "192.168.0.1" "IP Address"
 
 COMMAND KIT_TO SEND_DATA_TYPE <%= Osk::Cfg.processor_endian %> "Send data type"
   <%= Osk::Cfg.cmd_hdr(@APP_PREFIX_STR, @CMD_MID_STR, 8, 0) %>

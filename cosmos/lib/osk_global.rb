@@ -26,7 +26,7 @@ module Osk
    NULL_IP_ADDR  = "0.0.0.0"
 
    # The following definitions must match cmd_tlm_Server.txt definitions
-   COSMOS_IP_ADDR = "127.0.0.1"
+   COSMOS_IP_ADDR = "192.168.0.1"
    COSMOS_CFS_INT = "LOCAL_CFS_INT"
 
    PISAT_IP_ADDR = "192.168.0.1"

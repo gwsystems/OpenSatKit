@@ -58,52 +58,52 @@ def cfs_kit_launch_app(screen, app)
       #  
       
       
-      core = `pgrep core`
-      if (core.length > 1)
-         #puts core + " len = #{core.length}"
-         `echo osk | sudo -S kill #{core}`
-      end
-      
-      spawn("xfce4-terminal --default-working-directory=""#{Cosmos::USERPATH}/../cfs/build/exe/cpu1"" --execute sudo ./core-cpu1""")
-        
-      #~Osk::system.connect_to_local_cfs  # Sometimes previous session left in a bad state
-
-      done = false
-      attempts = 0
-      seq_cnt = tlm("CFE_ES #{Osk::TLM_STR_HK_PKT} #{Ccsds::PRI_HDR_SEQUENCE}")
-      while (!done)
-         core = `pgrep core`
-         if (core.length > 1)
-            wait(2)
-            cmd("KIT_TO ENABLE_TELEMETRY")
-            done = true
-            #puts core + " len = #{core.length}"
-         else
-            attempts += 1
-            if (attempts < 5)
-               wait (4)
-            else
-               done = true
-            end
-         end
-         #~puts core + " len = #{core.length}"
-         #~if ( tlm("CFE_ES #{Osk::TLM_STR_HK_PKT} #{Ccsds::PRI_HDR_SEQUENCE}") != seq_cnt)
-         #~   done = true
-         #~else
-         #~   begin
-         #~      cmd("KIT_TO ENABLE_TELEMETRY")
-         #~   rescue
-         #~      Osk::system.connect_to_local_cfs
-         #~   end
-         #~   attempts += 1
-         #~   if (attempts < 5)
-         #~      wait (4)
-         #~   else
-         #~      done = true
-         #~   end
-         #~end   
-      end # while ! done
-      #~puts "attempt #{attempts}"
+#      core = `pgrep core`
+#      if (core.length > 1)
+#         #puts core + " len = #{core.length}"
+#         `echo osk | sudo -S kill #{core}`
+#      end
+#      
+#      spawn("xfce4-terminal --default-working-directory=""#{Cosmos::USERPATH}/../cfs/build/exe/cpu1"" --execute sudo ./core-cpu1""")
+#        
+#      #~Osk::system.connect_to_local_cfs  # Sometimes previous session left in a bad state
+#
+#      done = false
+#      attempts = 0
+#      seq_cnt = tlm("CFE_ES #{Osk::TLM_STR_HK_PKT} #{Ccsds::PRI_HDR_SEQUENCE}")
+#      while (!done)
+#         core = `pgrep core`
+#         if (core.length > 1)
+#            wait(2)
+#            cmd("KIT_TO ENABLE_TELEMETRY")
+#            done = true
+#            #puts core + " len = #{core.length}"
+#         else
+#            attempts += 1
+#            if (attempts < 5)
+#               wait (4)
+#            else
+#               done = true
+#            end
+#         end
+#         #~puts core + " len = #{core.length}"
+#         #~if ( tlm("CFE_ES #{Osk::TLM_STR_HK_PKT} #{Ccsds::PRI_HDR_SEQUENCE}") != seq_cnt)
+#         #~   done = true
+#         #~else
+#         #~   begin
+#         #~      cmd("KIT_TO ENABLE_TELEMETRY")
+#         #~   rescue
+#         #~      Osk::system.connect_to_local_cfs
+#         #~   end
+#         #~   attempts += 1
+#         #~   if (attempts < 5)
+#         #~      wait (4)
+#         #~   else
+#         #~      done = true
+#         #~   end
+#         #~end   
+#      end # while ! done
+#      #~puts "attempt #{attempts}"
       
    elsif (app == "CFE_SERVICES")
       display("CFS_KIT CFE_SCREEN",50,50)   
