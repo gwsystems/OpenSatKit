@@ -81,6 +81,7 @@ CFE_PSP_SensorISR(void *p)
 	while (1) {
 		unsigned long long missed = 0;
 		int ret;
+		unsigned long long t = 0;
 
 		ret = read(TimerFd, &missed, sizeof(missed));
 		if (ret < 0) {
@@ -92,16 +93,15 @@ CFE_PSP_SensorISR(void *p)
 		if (ret == 0) {
 			OS_printf("Something wrong with the read!\n");
 		}
+		//if (ret > 1) OS_printf("missed:%d\n", ret);
 
+		CFE_PSP_TSCVAL(t);
 		while (ret > 0) {
 			char data[CFE_PSP_SENSOR_DATASZ] = { 0 };
 			char time[32] = { 0 };
-			unsigned long long t = 0;
-
 
 			strcpy(data, SensorTraceDump[trace_curr]);
 			/* for RTT measurements */
-			CFE_PSP_TSCVAL(t);
 			sprintf(time, "%llu\n", t);
 			strcat(data, time);
 			

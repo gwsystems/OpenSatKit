@@ -443,7 +443,7 @@ static boolean ProcessActuatorData(void)
 //            ActuatorPkt->SaGimbalCmd);
                  I42_TSCVAL(now);
 		/* TODO: calculate the diff from ActuatorPkt->time to time "now", that will be the RTT */
-		 //OS_printf("st:%llu, end:%llu, rtt: %llu\n", ActuatorPkt->time, now, (now - ActuatorPkt->time));
+		 OS_printf("st:%llu, end:%llu, rtt: %llu\n", ActuatorPkt->time, now, (now - ActuatorPkt->time));
 
 		 PktSent = SendActuatorPkt(I42App.OutBuf, strlen(I42App.OutBuf));
 
