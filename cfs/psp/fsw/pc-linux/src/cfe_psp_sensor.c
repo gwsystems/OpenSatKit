@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <sys/time.h>
 #include <sys/timerfd.h>
 #include <unistd.h>
@@ -12,7 +13,7 @@
 #define CFE_PSP_SENSOR_DATASZ 550
 
 #define CFE_PSP_SENSOR_STARTTIME_SEC 20
-#define CFE_PSP_SENSOR_INTERVAL_SEC (2) //2s
+#define CFE_PSP_SENSOR_INTERVAL_SEC (10) //2s
 #define CFE_PSP_SENSOR_INTERVAL_NSEC (500*1000*1000) //500ms
 
 #define CFE_PSP_SENSOR_THDPRIO 4
@@ -90,13 +91,15 @@ CFE_PSP_SensorISR(void *p)
 			pthread_exit(NULL);
 		}
 
-		if (ret == 0) {
+		if (ret != sizeof(unsigned long long)) {
 			OS_printf("Something wrong with the read!\n");
+			assert(0);
 		}
-		//if (ret > 1) OS_printf("missed:%d\n", ret);
+		assert(missed == 1);
+		//OS_printf("missed:%d\n", missed);
 
 		CFE_PSP_TSCVAL(t);
-		while (ret > 0) {
+		while (missed > 0) {
 			char data[CFE_PSP_SENSOR_DATASZ] = { 0 };
 			char time[32] = { 0 };
 
@@ -113,7 +116,7 @@ CFE_PSP_SensorISR(void *p)
 			trace_curr++;
 			if (trace_curr == trace_sz) trace_curr = 0;
 
-			ret--;
+			missed--;
 		}
 	}
 
@@ -173,13 +176,13 @@ CFE_PSP_SensorInit(void)
 		return -1;
 	}
 
-	TimerSpec.it_value.tv_sec = CFE_PSP_SENSOR_STARTTIME_SEC;
+	TimerSpec.it_value.tv_sec = 1;//CFE_PSP_SENSOR_STARTTIME_SEC;
 	TimerSpec.it_value.tv_nsec = 0;
 
-	//TimerSpec.it_interval.tv_sec = 0;
-	//TimerSpec.it_interval.tv_nsec = CFE_PSP_SENSOR_INTERVAL_NSEC;
-	TimerSpec.it_interval.tv_sec = CFE_PSP_SENSOR_INTERVAL_SEC;
-	TimerSpec.it_interval.tv_nsec = 0;
+	TimerSpec.it_interval.tv_sec = 0;
+	TimerSpec.it_interval.tv_nsec = CFE_PSP_SENSOR_INTERVAL_NSEC;
+	//TimerSpec.it_interval.tv_sec = CFE_PSP_SENSOR_INTERVAL_SEC;
+	//TimerSpec.it_interval.tv_nsec = 0;
 
 	ret = timerfd_settime(TimerFd, 0, &TimerSpec, NULL);
 	if (ret < 0) {
