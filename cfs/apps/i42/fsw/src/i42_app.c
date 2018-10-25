@@ -319,7 +319,11 @@ static boolean ProcessSensorData(void)
             &(I42App.SensorPkt.svb[0]), &(I42App.SensorPkt.svb[1]), &(I42App.SensorPkt.svb[2]),
             &(I42App.SensorPkt.bvb[0]), &(I42App.SensorPkt.bvb[1]), &(I42App.SensorPkt.bvb[2]),
             &(I42App.SensorPkt.Hw[0]),  &(I42App.SensorPkt.Hw[1]),  &(I42App.SensorPkt.Hw[2]),
+#ifdef RTT_MEASURE
             &(I42App.SensorPkt.SunValid), &(I42App.SensorPkt.time))) == 28) {
+#else
+            &(I42App.SensorPkt.SunValid))) == 27) {
+#endif
 
             //OS_printf("I42::ProcessSensorData(): Hw = [%.8e, %.8e, %.8e]\n",
 		      //          I42App.SensorPkt.Hw[0],I42App.SensorPkt.Hw[1],I42App.SensorPkt.Hw[2]);
@@ -377,6 +381,35 @@ static boolean ProcessSensorData(void)
 
 } /* NETIF_ProcessSensorData() */
 
+#define I42_PERF_ITERS 100 /* 500ms interval between requests.. = 8mins approx */
+static unsigned long long test_values[I42_PERF_ITERS] = { 0 };
+static unsigned int test_iters = 0;
+/* FIXME: follow CFS style! */
+static inline void
+rtt_measure(unsigned long long st_time)
+{
+#ifdef RTT_MEASURE
+	unsigned long long now = 0;
+
+	if (test_iters >= I42_PERF_ITERS) return;
+	I42_TSCVAL(now);
+
+	test_values[test_iters] = now - st_time;
+	test_iters++;
+	if (test_iters == I42_PERF_ITERS) {
+		unsigned int i = 0;
+
+		for (; i < test_iters; i++) {
+			OS_printf("%llu\n", test_values[i]);
+			/* just print for post processing */
+		}
+		OS_printf("----------------------------------\n");
+		/* reset and get a fresh set! */
+		//test_iters = 0;
+	}
+#endif
+}
+
 
 /******************************************************************************
 ** Function: ProcessActuatorData
@@ -426,7 +459,6 @@ static boolean ProcessActuatorData(void)
       MsgId = CFE_SB_GetMsgId(MsgPtr);
 
       if (MsgId == F42_ACTUATOR_MID) {
-            unsigned long long now;
 
 	     ActuatorPkt = (F42_ADP_ActuatorPkt*)MsgPtr;
 
@@ -441,9 +473,9 @@ static boolean ProcessActuatorData(void)
 //            ActuatorPkt->WhlTorqCmd[0], ActuatorPkt->WhlTorqCmd[1], ActuatorPkt->WhlTorqCmd[2],
 //            ActuatorPkt->MtbCmd[0], ActuatorPkt->MtbCmd[1], ActuatorPkt->MtbCmd[2],
 //            ActuatorPkt->SaGimbalCmd);
-                 I42_TSCVAL(now);
-		/* TODO: calculate the diff from ActuatorPkt->time to time "now", that will be the RTT */
-		 OS_printf("st:%llu, end:%llu, rtt: %llu\n", ActuatorPkt->time, now, (now - ActuatorPkt->time));
+#ifdef RTT_MEASURE
+		 rtt_measure(ActuatorPkt->time);
+#endif
 
 		 PktSent = SendActuatorPkt(I42App.OutBuf, strlen(I42App.OutBuf));
 

@@ -20,6 +20,10 @@
 ** namespace _42 {
 ** #endif
 */
+#ifndef RTT_MEASURE
+/* change this to define if you need RTT measurements, also enable CFE_PSP_RTT_MEASURE in psp/fsw/pc-linux/src/cfe_psp_sensor.c */
+#undef RTT_MEASURE
+#endif
 
 struct CmdVecType {
    long Mode;
@@ -164,7 +168,9 @@ struct FSWType {
 
    double Bold1,Bold2,xold,yold;
 
+#ifdef RTT_MEASURE
    unsigned long long sttime; /* for RTT measurement */
+#endif
 };
 
 /*
