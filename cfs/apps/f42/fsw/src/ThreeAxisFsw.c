@@ -122,7 +122,7 @@ void InitFSW(struct FSWType *FSW)
     for (i=0;i<3;i++) {
         FSW->MOI[i] = MOI[i];
     }
-    OS_printf(">>>>>>InitFSW MOI: %lf %lf %lf\n",FSW->MOI[0],FSW->MOI[1],FSW->MOI[2]);
+    //OS_printf(">>>>>>InitFSW MOI: %lf %lf %lf\n",FSW->MOI[0],FSW->MOI[1],FSW->MOI[2]);
     FSW->mass = 1000.0;
 
     /* For RampCoastGlide.  See Inp_Cmd.txt for easy modification. */
@@ -174,7 +174,7 @@ void ThreeAxisFSW(struct FSWType *FSW)
             FindPDGains(FSW->MOI[i],FSW->wc[i],FSW->zc[i], &FSW->Kr[i],&FSW->Kp[i]);
         }
         FSW->Kunl = 1.0E6;
-        OS_printf(">>>>>>ThreeAxis Init MOI: %lf %lf %lf\n",FSW->MOI[0],FSW->MOI[1],FSW->MOI[2]);
+        //OS_printf(">>>>>>ThreeAxis Init MOI: %lf %lf %lf\n",FSW->MOI[0],FSW->MOI[1],FSW->MOI[2]);
     }
 
       /* Find Attitude Command */
