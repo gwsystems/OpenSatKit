@@ -100,6 +100,7 @@
 /****************************************************************************************
                                     INCLUDE FILES
 ****************************************************************************************/
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <sys/types.h>
 #include <ctype.h>
@@ -107,6 +108,7 @@
 #include <semaphore.h>
 #include <time.h>
 #include <signal.h>
+#include <sched.h>
 
 #include <errno.h> 
 #include <sys/socket.h>
@@ -288,7 +290,26 @@ int32 OS_API_Init(void)
    struct sched_param  param;
    int                 sched_policy;
    sigset_t            mask;
+   cpu_set_t           cs;
 
+   /*
+    * Set to run only on core 0.
+    * I'm surprised it doesn't do that already.
+    * Having a folder named "cpu1" is so misleading if you
+    * don't force to run on "cpu1".!
+    */
+   CPU_ZERO(&cs);
+   CPU_SET(0, &cs);
+   if (sched_setaffinity(0, sizeof(cpu_set_t), &cs)) {
+       perror("failed to set affinity");
+   }
+   if (sched_getaffinity(0, sizeof(cpu_set_t), &cs)) {
+       perror("failed to get affinity");
+   }
+
+   if (!CPU_ISSET(0, &cs)) {
+      printf("affinity not set\n");
+   }
    /*
    ** Disable Signals to parent thread and therefore all
    ** child threads create will block all signals
